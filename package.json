@@ -1,5 +1,5 @@
 {
-  "name": "shadowfiles",
+  "name": "shadowfiles-core",
   "version": "0.0.1",
   "description": "A library for creating client-side files on a website.",
   "main": "index.js",
