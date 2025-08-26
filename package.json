@@ -4,14 +4,14 @@
   "description": "A library for creating client-side files on a website.",
   "main": "index.js",
   "types": "dist/index.d.ts",
-  "private": true,
+  "private": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "pnpm run build"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["service worker", "file server", "browser"],
+  "author": "Coder178",
   "license":"AGPL-3.0-or-later",
   "files": ["LICENSE", "sw.js", "index.js", "index.d.ts", "package.json", "dist"],
   "exports": {
