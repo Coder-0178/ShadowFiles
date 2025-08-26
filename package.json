@@ -21,9 +21,6 @@
   "license": "AGPL-3.0-or-later",
   "files": [
     "LICENSE",
-    "sw.js",
-    "index.js",
-    "index.d.ts",
     "package.json",
     "dist"
   ],
