@@ -10,15 +10,26 @@
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "pnpm run build"
   },
-  "keywords": ["service worker", "file server", "browser"],
+  "keywords": [
+    "service worker",
+    "file server",
+    "browser"
+  ],
   "author": "Coder178",
-  "license":"AGPL-3.0-or-later",
-  "files": ["LICENSE", "sw.js", "index.js", "index.d.ts", "package.json", "dist"],
+  "license": "AGPL-3.0-or-later",
+  "files": [
+    "LICENSE",
+    "sw.js",
+    "index.js",
+    "index.d.ts",
+    "package.json",
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
-  "packageManager": "pnpm@10.13.1"
+  "packageManager": "pnpm@10.15.0"
 }
