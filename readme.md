@@ -8,13 +8,14 @@ If you want to see how to set it up (it's not just `npm i shadowfiles`) go to
 This project is licensed under the GNU Affero General Public License v3.0 **or later** (AGPL-3.0-or-later).  
 See [LICENSE](/LICENSE) for the full text.
 
+
 # Use Cases
 This library has a very niche use case. It is useful if you need to serve dynamic content to a specific user on the client-side. Additionally, this can help if you need to create a mock API that returns whatever data you want.
 
 # Setup
 To set up ShadowFiles you need to first install the package.
 ShadowFiles only works **in a browser** with [**Service Worker support**](https://caniuse.com/serviceworkers).
-> [!INFO]
+> [!NOTE]
 > These instructions are mainly for [Vite](https://vite.dev) users. If you are using another build system like Webpack then you'll need to look at its documentation for service worker support. You can always [Use the plain worker script](#using-a-worker-script) if you need a fast solution, however, this will prevent you from using another service worker in the same scope.
 
 ## Using Vite (v7)
@@ -31,7 +32,7 @@ await registerVite({
     scope: "/dyn"
 });
 ```
-> [!INFO]
+> [!NOTE]
 > Passing a scope (the default is `/`), means that all files you create will be
 > under `/[scope]/path/to/the/file`, for example, by passing in `/dyn`
 > if you create a file called "myfile.txt" it will actually be served at
@@ -90,7 +91,7 @@ updateAsset("somefile.txt", {
 ```
 
 \* While Shadowfiles will not send a content-type header other than `text/plain`, the browser may decide based on the extension what the true content type is, so it may work on some browsers.
-> [!INFO]
+> [!NOTE]
 > Custom headers are supported, you can set any headers you want. 
 
 > [!IMPORTANT]
@@ -123,7 +124,7 @@ if(await assetExists("somefile.txt")) {
     const data = await readAsset("somefile.txt");
 }
 ```
-> [!INFO]
+> [!NOTE]
 > Read operations will wait for the write queue to clear 
 > before reading the file. 
 
