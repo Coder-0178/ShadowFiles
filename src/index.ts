@@ -22,7 +22,7 @@ export async function register(options: { url: string } & RegistrationOptions) {
   }
 
   const r = await navigator.serviceWorker.register(options.url, options);
-  
+
   await navigator.serviceWorker.ready;
   onReady();
   return r;
@@ -38,7 +38,9 @@ export async function registerVite(options: RegistrationOptions) {
   }
 
   const r = await navigator.serviceWorker.register(
-    new URL("./sw.js", import.meta.url),
+    new URL("./sw.js", import.meta.url), // this is how Vite auto-bundles 
+    // service workers
+    // todo TEST THIS w/ Vite as a dependency
     options,
   );
 
