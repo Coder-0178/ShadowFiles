@@ -41,7 +41,7 @@ await registerVite({
 ## Using a Worker Script
 These steps are a little more complex. After installing the library, go into your `node_modules` folder and find `shadowfiles`. You'll see a file in there (`sw.js`.)
 **Copy** this file out of the node modules folder. Put it somewhere in your project where assets are served. Usually something like `public`. 
-Wherever these files get served, that will be the URL you pass as the `serviceWorkerUrl` in `register`
+Wherever these files get served, that will be the URL you pass as the `url` in `register`
 ## Registering the Worker
 To register the worker, use `register`.
 This example uses top-level await which may not be supported depending on your environment.
@@ -49,7 +49,7 @@ This example uses top-level await which may not be supported depending on your e
 import { register } from "shadowfiles";
 
 await register({
-    serviceWorkerUrl: "/the-url-to-sw.js",
+    url: "/the-url-to-sw.js",
     // you can pass options here like scope
     scope: "/dyn"
 });
