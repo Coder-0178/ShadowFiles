@@ -3,15 +3,22 @@
   "version": "0.0.1",
   "description": "A library for creating client-side files on a website.",
   "main": "index.js",
+  "types": "dist/index.d.ts",
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "prepublishOnly": "pnpm run build && pnpm verify-pack"
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm run build"
   },
   "keywords": [],
   "author": "",
   "license":"AGPL-3.0-or-later",
-  "files": ["LICENSE", "sw.js", "index.js", "index.d.ts", "package.json"],
+  "files": ["LICENSE", "sw.js", "index.js", "index.d.ts", "package.json", "dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "packageManager": "pnpm@10.13.1"
 }

@@ -4,7 +4,7 @@ index.d.ts
 sw.d.ts 
 
 .vscode/
-
+dist/
 
 # Logs
 logs

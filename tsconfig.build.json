@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "incremental": false,      // ⬅️ prevents writing any .tsbuildinfo
+        "outDir": "dist",
+        "declaration": true,
+        "declarationMap": false,
+        "sourceMap": false,
+        "stripInternal": true
+      },
+      "include": ["src"],
+      "exclude": ["**/*.test.ts", "**/__tests__/**", "dist", "node_modules"]
+}
