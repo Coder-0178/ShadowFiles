@@ -2,7 +2,6 @@
 //! Licensed under AGPLv3-or-later, Copyright (C) Jonathon Woolston
 import type { ClientMessage, CreateAssetMessage, SwMessage } from "./shared";
 
-export {};
 
 const DEFAULT_CACHE = "_$shadowfiles-store-v1";
 const PERSISTENT_CACHE = "_$shadowfiles-persistent-store-v1";
