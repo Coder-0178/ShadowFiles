@@ -1,6 +1,9 @@
 # ShadowFiles 
 ShadowFiles is a library that uses [Service Workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) to serve files on the client.
 
+> [!IMPORTANT]
+> This is still in development, many of the features listed here are planned but not yet implemented!
+
 If you want to see how to set it up (it's not just `npm i shadowfiles`) go to
 [Setup](#setup)
 
@@ -15,6 +18,11 @@ This library has a very niche use case. It is useful if you need to serve dynami
 # Setup
 To set up ShadowFiles you need to first install the package.
 ShadowFiles only works **in a browser** with [**Service Worker support**](https://caniuse.com/serviceworkers).
+
+> [!IMPORTANT]
+> ShadowFiles is targeted towards ES2024, ensure that your use case supports this. 
+> Forking and changing the tsconfig is always an option.
+
 > [!NOTE]
 > These instructions are mainly for [Vite](https://vite.dev) users. If you are using another build system like Webpack then you'll need to look at its documentation for service worker support. You can always [Use the plain worker script](#using-a-worker-script) if you need a fast solution, however, this will prevent you from using another service worker in the same scope.
 
@@ -22,9 +30,10 @@ ShadowFiles only works **in a browser** with [**Service Worker support**](https:
 First, create a `src/service-worker.ts` file. If it already exists, don't worry. 
 At the top of the file, add `import "shadowfiles/sw.js"` 
 If you're using Sveltekit, you're done. For other frameworks, see their docs for additional steps.
+
 ## Registering the Service Worker
 If your framework doesn't support automatic service worker registration, you'll need to do it manually.
-Add this code to a place that is run when the page loads (eg, `index.html` or `index.ts` or `+layout.svelte` in a script tag)
+Add this code to a place that is run when the page loads (eg, `index.html` or `index.ts`)
 ```ts
 import { registerVite } from "shadowfiles";
 await registerVite({
@@ -83,16 +92,44 @@ You should also specify a content-type. This is not determined automatically by 
 import { updateAsset, ready } from "shadowfiles";
 await ready();
 
-updateAsset("somefile.txt", {
+await updateAsset("somefile.txt", {
     headers: {
         "Content-Type": "application/json"
     }
 }); // updateAsset supports an object to update the asset's metadata.
+
+// you can even combine creating an setting data & setting headers into one call:
+await updateAsset("somefile.txt", new Uint8Array(5), {
+    headers: {
+        "Content-Type": "application/json"
+    }
+})
 ```
 
 \* While Shadowfiles will not send a content-type header other than `text/plain`, the browser may decide based on the extension what the true content type is, so it may work on some browsers.
 > [!NOTE]
 > Custom headers are supported, you can set any headers you want. 
+
+> [!IMPORTANT]
+> By default, ShadowFiles aren't designed to persist across service worker activations,
+> so most assets you create will NOT remain unless you recreate them. See [Persistent Assets](#persistent-assets) for a solution.
+
+### Persistent Assets
+Creating a persistent asset can be done by passing `persistent: true` into the options object.
+This will mean that it will persist across SW activations. If the user clears their cookies, it will be gone however.
+```ts
+import { ready, updateAsset } from "shadowfiles";
+await ready();
+
+await updateAsset("somefile.txt", "some data", {
+    headers: {
+        "Content-Type": "plain/text"
+    },
+    persistent: true,
+});
+
+```
+
 
 > [!IMPORTANT]
 > No two write operations will happen at the same time to each asset.
@@ -133,6 +170,14 @@ Managing the served assets requires communication with the service worker via `p
 This means that if you intercept a message event, it may not reach the Shadowfiles SW code. 
 That is why you should put the `import "shadowfiles/sw.js"` line at the top to ensure this won't happen.
 
-# Potential Issues
+## Potential Issues
 - Version Mismatches
-If you use multiple incompatible versions of ShadowFiles, you may run into low-level, hard-to-debug problems with the service worker internals. Currently, this is not handled by the library. At minimum, stick to within the same major version, with the highest minor & patch version if possible for the service worker.
+Multiple versions of ShadowFiles are largely compatible; however, you should avoid doing so when possible.
+## Service Worker Caches
+Shadowfiles uses these two cache names for its files:
+- `_$shadowfiles-store-v1` for ephemeral files
+- `_$shadowfiles-persistent-store-v1` for persistent files
+These are used to store the assets you set. Modifying them in your own service worker may cause problems.
+
+# Roadmap
+1. Custom `Cache-Control` handling -> In the future, you should be able to set the `Cache-Control: max-age=...` header to define when to evict old files, even persistent ones, automatically. 

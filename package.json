@@ -15,7 +15,6 @@
     "file server",
     "browser"
   ],
-
   "repository": "github:Coder-0178/ShadowFiles",
   "author": "Coder178",
   "license": "AGPL-3.0-or-later",
@@ -30,5 +29,8 @@
       "default": "./dist/index.js"
     }
   },
-  "packageManager": "pnpm@10.15.0"
+  "packageManager": "pnpm@10.15.0",
+  "devDependencies": {
+    "@types/serviceworker": "^0.0.151"
+  }
 }

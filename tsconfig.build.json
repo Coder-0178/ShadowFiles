@@ -2,7 +2,7 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "noEmit": false,
-        "incremental": false,      // ⬅️ prevents writing any .tsbuildinfo
+        "incremental": false,
         "outDir": "dist",
         "declaration": true,
         "declarationMap": false,
