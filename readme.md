@@ -38,7 +38,9 @@ Add this code to a place that is run when the page loads (eg, `index.html` or `i
 import { registerVite } from "shadowfiles";
 await registerVite({
     // you can pass service worker options like scope here.
-    scope: "/dyn"
+    scope: "/dyn", // default: "/"
+
+    type: "module", // THIS IS THE DEFAULT
 });
 ```
 > [!NOTE]
@@ -60,9 +62,11 @@ import { register } from "shadowfiles";
 await register({
     url: "/the-url-to-sw.js",
     // you can pass options here like scope
-    scope: "/dyn"
+    scope: "/dyn", // default: "/"
+
+    type: "module" // THIS IS THE DEFAULT
 });
-// now its ready!
+// now it's ready!
 ```
 
 > [!IMPORTANT]
@@ -70,6 +74,42 @@ await register({
 > They use `clients.claim()` to apply to all existing connections, therefore making a reload unnecessary. 
 > If this is not intended, you can pass `skipClaim: true` as an option, but you will have to 
 > reload yourself.
+
+## Using a CDN
+If you want, you can import ShadowFiles directly from a CDN (version 0.0.3+)
+
+> [!CAUTION]
+> While minified, using CDNs removes any ability to use [Tree Shaking](https://rollupjs.org/introduction/#tree-shaking) to reduce code size.
+> This means that in most cases, you are shipping more code than is needed. 
+
+```ts
+// inside any module you want to use ShadowFiles
+// USE A FIXED LINK, DO NOT USE THIS ONE!
+import {ready, register} from "https://cdn.jsdelivr.net/npm/shadowfiles-core@0/dist/index.min.js"
+register(/* args */)
+await ready();
+//etc
+```
+Then, in the service worker:
+```ts
+//inside your service worker (type: module)
+// USE A FIXED LINK, DO NOT USE THIS ONE!
+import "https://cdn.jsdelivr.net/npm/shadowfiles-core@0/dist/sw.min.js";
+// done!
+```
+--OR--
+```ts
+// inside your service worker (type: classic/default)
+// USE A FIXED LINK, DO NOT USE THIS ONE!
+importScripts("https://cdn.jsdelivr.net/npm/shadowfiles-core@0/dist/sw.min.js");
+// done!
+```
+> [!CAUTION]
+> Using `importScripts` is not recommended, please use a module-type service worker
+> if possible. ShadowFiles was not designed to support classic service workers.
+> However, if you are using the SW just for ShadowFiles, then it _should_ be fine.
+
+
 
 # Bypassing ShadowFiles
 If you need to bypass ShadowFiles for whatever reason, you can pass the `X-SF-BYPASS` header and set it to a value like `1`. If this header is sent, it will bypass ShadowFiles.
