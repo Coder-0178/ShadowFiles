@@ -71,6 +71,13 @@ await register({
 > If this is not intended, you can pass `skipClaim: true` as an option, but you will have to 
 > reload yourself.
 
+# Bypassing ShadowFiles
+If you need to bypass ShadowFiles for whatever reason, you can pass the `X-SF-BYPASS` header and set it to a value like `1`. If this header is sent, it will bypass ShadowFiles.
+
+# Debugging ShadowFiles issues
+All assets that ShadowFiles responds with will return a `X-HANDLED-BY` header with the value `ShadowFiles`.
+If this header is present and set to that, then the asset was likely handled by ShadowFiles. This can help to narrow down problems. Using the DevTools `Network` panel can also help.
+
 # Managing Served Assets
 ## Creating a file
 Creating files to serve is easy. You can pass a string or an `ArrayBuffer`. 
@@ -139,10 +146,13 @@ await updateAsset("somefile.txt", "some data", {
 
 
 ## Getting the data
-By design, you can get the data by using `fetch`, of course, however, if you would like to avoid an entire network call to the service worker, using `readAsset` may be slightly faster. 
-Also, if you set a scope, `fetch` will care about the scope, but `readAsset` will not.
+By design, you can get the data by using `fetch`, but that may not be the best. 
 Using `readAsset` may help avoid race conditions because it will wait for all pending write operations
 to finish before reading the data. Using `fetch` will not. 
+
+> [!IMPORTANT]
+> The `readAsset` function, just like `fetch` cares about the scope. Ex: If you set the scope to be `/dyn`
+> then you must pass `/dyn/[path]` into `readAsset`.
 
 Example:
 ```ts
@@ -161,23 +171,34 @@ if(await assetExists("somefile.txt")) {
     const data = await readAsset("somefile.txt");
 }
 ```
+
+
 > [!NOTE]
 > Read operations will wait for the write queue to clear 
 > before reading the file. 
 
 # Internals
+This is a list of internal features related to ShadowFiles that _might_ cause a problem for you.
+It is unlikely, but possible. 
+
+## Event Issues
 Managing the served assets requires communication with the service worker via `postMessage`.
 This means that if you intercept a message event, it may not reach the Shadowfiles SW code. 
 That is why you should put the `import "shadowfiles/sw.js"` line at the top to ensure this won't happen.
 
-## Potential Issues
-- Version Mismatches
+## Version Mismatches
 Multiple versions of ShadowFiles are largely compatible; however, you should avoid doing so when possible.
+
 ## Service Worker Caches
 Shadowfiles uses these two cache names for its files:
 - `_$shadowfiles-store-v1` for ephemeral files
 - `_$shadowfiles-persistent-store-v1` for persistent files
 These are used to store the assets you set. Modifying them in your own service worker may cause problems.
+
+## Global Symbols
+To store page-wide state without polluting the global scope, ShadowFiles uses a custom `Symbol()`.
+This is retrieved with `Symbol.for()`, the name is `_shadowFilesGlobalStateData`. Avoid using
+that in `Symbol.for()`.
 
 # Roadmap
 1. Custom `Cache-Control` handling -> In the future, you should be able to set the `Cache-Control: max-age=...` header to define when to evict old files, even persistent ones, automatically. 

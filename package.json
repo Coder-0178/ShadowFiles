@@ -7,8 +7,8 @@
   "private": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p tsconfig.build.json",
-    "prepublishOnly": "pnpm run build"
+    "build": "tsc -p tsconfig.build.json && terser -m -c --module --ecma 2024 ./dist/index.js -o ./dist/index.min.js && terser -m -c --module --ecma 2024 ./dist/sw.js -o ./dist/sw.min.js",
+    "prepublishOnly": "pnpm build"
   },
   "keywords": [
     "service worker",
@@ -31,6 +31,7 @@
   },
   "packageManager": "pnpm@10.15.0",
   "devDependencies": {
-    "@types/serviceworker": "^0.0.151"
+    "@types/serviceworker": "^0.0.151",
+    "terser": "^5.43.1"
   }
 }

@@ -1,6 +1,10 @@
+//! This file is part of ShadowFiles (https://github.com/Coder-0178/ShadowFiles)
+//! Licensed under AGPLv3-or-later, Copyright (C) Jonathon Woolston
 let onReady: () => void = () => {
   throw new Error("ready() was used before registration.");
 };
+
+const globalStateSymbol = globalThis.Symbol.for("_shadowFilesGlobalStateData");
 
 const readyPromise = new Promise<void>((resolve) => {
   onReady = resolve;
@@ -23,10 +27,16 @@ export async function register(options: { url: string } & RegistrationOptions) {
 
   const r = await navigator.serviceWorker.register(options.url, options);
 
+  navigator.serviceWorker.addEventListener("message", (ev) => {
+    
+  });
+
   await navigator.serviceWorker.ready;
   onReady();
   return r;
 }
+
+async function handleSwEvent() {}
 
 export async function registerVite(options: RegistrationOptions) {
   const scope = options.scope ?? "/";
@@ -38,7 +48,7 @@ export async function registerVite(options: RegistrationOptions) {
   }
 
   const r = await navigator.serviceWorker.register(
-    new URL("./sw.js", import.meta.url), // this is how Vite auto-bundles 
+    new URL("./sw.js", import.meta.url), // this is how Vite auto-bundles
     // service workers
     // todo TEST THIS w/ Vite as a dependency
     options,
